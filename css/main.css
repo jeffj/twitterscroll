@@ -1,0 +1,345 @@
+ /*
+
+-div#cards1 {
+    display: inline-block;
+    margin-top: -6px;
+
+}
+
+
+
+
+div#cards div span { display: none; }
+
+div#cards div:hover span { display: block;
+   position: absolute; // 
+   padding: 0px; margin: 0px; z-index: 0;
+   color: black; background: white;
+   margin-top: -58px;
+   
+}   
+div#cards div:hover span p {
+	font:14px Helvetica,sans-serif;
+	margin:0px;
+	padding:2px;
+	padding-bottom:3px;
+	font-size:18px;
+
+
+
+}
+div#cards div:hover span a { 
+	display:inline;
+	color:#cba1a9;
+	
+	*/
+	
+	
+.texthover {
+	display:none;
+
+
+}
+
+#spinner {
+	
+	
+	width:300px;
+	margin-left:auto;
+	margin-right:auto;
+	text-align:center;
+}
+
+.timescroll {
+	
+  font:14px Helvetica,sans-serif;
+	margin:0px;
+	padding:3px;
+	padding-bottom:3px;
+	font-size:18px;
+	display: block;
+ 
+   color: black; 
+	background-color:rgba(200,200,200,0.7);
+   margin-top: 0px;
+  position: absolute; 
+
+	
+	
+}
+
+#bigpicture {
+	text-align:center;
+	right:40px;
+	
+}
+
+#bigpicture img {
+	 height:500px;
+	 max-height:500px;
+	
+}
+
+
+
+
+
+.expandHover {
+/*display:none;*/
+
+    width: 30px;
+    text-align: right;
+    opacity: .8;
+    filter: alpha(opacity=80);
+	display:none;
+	
+	position: absolute;
+
+}
+
+
+div#cards div:hover .expandHover a {
+	    width: 30px;
+    opacity: .8;
+    filter: alpha(opacity=80);
+	display:inline;
+	
+	position: absolute;
+
+margin-top:120px
+
+	 
+}
+
+div#cards div:hover p.expandHover {
+    width: 30px;
+    opacity: .8;
+    filter: alpha(opacity=80);
+	display:inline;
+	
+margin-top:100px
+}
+
+
+.sourcelinkhover {
+/*display:none;*/
+
+    width: 30px;
+    opacity: .8;
+    filter: alpha(opacity=80);
+	display:none;
+	
+	position: absolute;
+
+}
+div#cards div:hover .sourcelinkhover a {
+	    width: 30px;
+    opacity: .8;
+    filter: alpha(opacity=80);
+	display:inline;
+	
+	position: absolute;
+
+
+	
+    
+}
+
+div#cards div:hover p.sourcelinkhover {
+    width: 30px;
+    opacity: .8;
+    filter: alpha(opacity=80);
+	display:inline;
+	
+margin-top:100px
+}
+
+div#cards div {
+	   color:black;
+		font-size:18px;
+		font-family:Arial;
+		font-weight:bold;
+
+	
+}
+
+
+
+
+
+
+
+
+
+
+.playhover {
+	
+	position:absolute;
+	margin-top:100px;
+	margin-left:175px;
+	display:block;
+	  opacity: .8;
+    filter: alpha(opacity=80);
+	
+}
+
+.timehover {
+	
+
+	display:none;
+	
+	
+	
+}
+
+.Vidtexthover {
+	
+
+	display:none;
+	
+	
+	
+}
+
+
+
+
+div#cards div:hover p.timehover {
+
+
+  font:14px Helvetica,sans-serif;
+	margin:0px;
+	padding:3px;
+	padding-bottom:3px;
+	font-size:18px;
+	display: block;
+ 
+   color: black; 
+	background-color:rgba(200,200,200,0.7);
+   margin-top: 0px;
+  position: absolute; 
+  
+  float:left;
+}
+
+
+
+
+div#cards div:hover p.texthover {
+	font:14px Helvetica,sans-serif;
+	margin:0px;
+	padding:2px;
+	padding-bottom:3px;
+	font-size:18px;
+	
+	display: block;
+ 
+   color: black; 
+	background-color:rgba(200,200,200,0.7);
+   margin-top: -58px;
+  position: absolute; 
+
+
+}
+div#cards div:hover p.Vidtexthover {
+	font:14px Helvetica,sans-serif;
+	margin:0px;
+	padding:2px;
+	padding-bottom:3px;
+	font-size:18px;
+	
+	display: block;
+ 
+   color: black; 
+	background-color:rgba(200,200,200,0.7);
+   margin-top: -28px;
+  position: absolute; 
+
+
+}
+
+
+
+
+
+
+
+
+#userinput {
+	
+	font-size:20px;
+	padding:4px;
+	z-index:1;
+
+	
+}
+
+#form {
+	
+	border-top:0px;
+	margin-left:auto;
+	margin-right:auto;
+	width: 450px;
+	
+
+	
+}
+
+#searchAction {
+		font-size:22px;
+		padding:3px;
+		padding-left:10px;
+		padding-right:10px;
+		border:solid;
+		border-width:2px;
+		background-color:#f4f3fd;
+		border-color:#b8b7c8;
+		font-family:Arial, Helvetica, sans-serif;
+		color:#52515a;
+		
+		}
+		
+		#buffer{
+						height:20px;
+
+			
+		}
+		
+			#bufferfront{
+						height:200px;
+
+			
+		}
+		
+		
+#logo {
+	
+	position:absolute;
+	margin-top:-23px;
+	margin-left:-135px;
+	z-index:-1;
+	width: 160px;
+
+	
+	
+}
+
+#logo2 {
+	
+	position:absolute;
+	margin-top: -2px;
+	margin-left: 115px;
+	z-index:-1;
+
+	
+	
+}
+
+
+
+
+
+
+	
+		
+		

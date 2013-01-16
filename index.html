@@ -1,0 +1,1248 @@
+<!doctype html>
+<html lang="en">
+<head>
+  
+  <meta charset="utf-8" />
+  <title>TwitterScroll</title>
+  
+  <!--[if lt IE 9]><script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+
+  <link rel="stylesheet" type="text/css" href="css/style.css">
+  <link rel="stylesheet" type="text/css" href="css/main.css">
+  <link rel="stylesheet" type="text/css" href="css/sizea.css">
+  <link rel="stylesheet" type="text/css" href="css/sizeb.css">
+
+
+  
+  <!-- scripts at bottom of page -->
+
+</head>
+<body class="demos" onload="">
+
+  
+     <div id="buffer">
+	 </div>
+
+
+<!--   <img src="../demos/walrus.png" id="logo">  <form id="Search" name="SearchForm" action="javascript: searchPush()" >
+ --> <input placeholder="Enter a Twitter Username" value="" size='28' id="userinput" name="SearchInput" type='text'/>
+<a id="searchAction" href='javascript: search()'>Search</a> <div style="display:none;" id="point"><a  id='searchAction' href=''></a></div>
+</form>
+
+<div id="sort-by" style="display:none; :fixed; float:left; margin-left:1000px; top:30px;">
+  <a href="">time</a>
+
+</div>
+
+<div id="size"style="position:fixed; float:left; margin-left:1200px; top:30px;">
+
+<a href=# onClick="applyStyle(2);return false">small</a>
+
+<a href=# onClick="applyStyle(3);return false">large</a>
+
+<a href=# onClick="globals();return false">stats</a>
+
+
+</div>
+
+
+
+<div id="counter"style="position:fixed; float:left; margin-left:-40px; top:20px; display:none;"></div>
+
+
+<div id="bigpicture">
+	
+	
+</div>
+
+  <div id="container" class="photos clearfix">
+  	  
+
+
+  </div> <!-- #container -->
+
+  
+  <div id="spinner"></div>
+  
+    <div id="data"></div>
+
+  
+  
+  
+  <nav id="page_nav">
+    <a href="../pages/2.html"></a>
+  </nav>
+
+  <script src="js/jquery-1.6.1.min.js"></script>
+  <script src="js/jquery.isotope.min.js"></script>
+  <script src="js/jquery.endless-scroll.js"></script>
+  <script src="js/spin.min.js"></script>
+  <script src="js/scroll-startstop.events.jquery.js"></script>
+  <script src="js/jquery.timeago.js" type="text/javascript"></script>
+  <script src="js/jquery.jsonp-2.1.4.min.js"></script>
+  <script src="js/jquery.scrollTo-1.4.2-min.js"></script>
+  <script src="js/SS.min.js"></script>
+
+
+<script
+src="http://www.shawnolson.net/scripts/public_smo_scripts.js"
+type="text/javascript">
+</script>
+
+<script>
+	
+	var TweetID
+	var Linksrc
+	
+	
+	
+	var router = Router({ // given the route '/dog/yella'.
+
+      '/?([^\/]*)\/?': {
+        on: function(route) { 
+		hashInject=route
+		
+		m=hashInject.search("&SRC=")
+		//alert(m)
+		if (m!=-1) {
+		
+			LinksrcRaw = hashInject.slice(m + 5)
+			Linksrc=LinksrcRaw.replace(/%5C/g,"/")
+		 	//	alert('jeff'+Linksrc)
+				
+		n=hashInject.search("&TWID=")
+		
+		TweetID=hashInject.slice(n+6,m)
+		
+		o=hashInject.search("&UID=")
+		UID=hashInject.slice(o+6,n)
+//		alert(UID)
+		
+
+		} else {
+			
+		o=hashInject.search("&UID=")
+		UID=hashInject.slice(o+5)
+	//	alert(UID)
+			
+		}
+
+		 
+		//Linksrc=LinksrcRaw.replace("%5C", "/")
+		
+	
+
+		
+		
+		
+		
+		
+			
+		
+		
+
+
+		
+				if (Linksrc!='' && TweetID!='' && UID!=''){
+				BPinject()
+				document.SearchForm.SearchInput.value=UID
+				search()
+			
+		} else {
+			Linksrc=null
+			TweetID=null
+			UID=null
+		}
+		
+		} 
+      }
+
+  }).init();
+	
+	
+//	if (location.href.indexOf("#") != -1) {
+//        // Your code in here accessing the string like this
+//        // location.href.substr(location.href.indexOf("#"))
+//		hashInject=location.href.substr(1+location.href.indexOf("#"))
+//		//alert(hashInject)
+//		
+//		//BPinject(hashInject);
+//		
+//		m=hashInject.search("&SRC=")
+//		Linksrc=hashInject.slice(m+5)
+//		
+//		n=hashInject.search("&TWID=")
+//		TweetID=hashInject.slice(n+6,m)
+//		
+//		o=hashInject.search("&UID=")
+//		UID=hashInject.slice(o+5,n)
+//		
+//	
+//		
+//		if (Linksrc!='' && TweetID!='' && UID!=''){
+//				BPinject()
+//				document.SearchForm.SearchInput.value=UID
+//				search()
+//			
+//		} else {
+//			Linksrc=null
+//			TweetID=null
+//			UID=null
+//		}
+//		
+//		
+//    }
+	
+	$('#sort-by a').click(function(){
+  // get href attribute, minus the '#'
+  var sortName = 'epoch';
+  //alert(sortName)
+  $('#container').isotope({ sortBy : 'original-order' });
+  return false;
+});
+	
+	
+	function applyStyle(k) {
+		
+if (k==2) {
+
+	var link = $("<link>");
+	link.attr({
+		type: 'text/css',
+		rel: 'stylesheet',
+		href: '../css/sizea.css'
+	});
+	$("head").append(link);
+	
+}
+
+if (k==3) {
+
+	var link = $("<link>");
+	link.attr({
+		type: 'text/css',
+		rel: 'stylesheet',
+		href: '../css/sizeb.css'
+	});
+	$("head").append(link);
+	
+}
+
+ 	$('#container').isotope({ sortBy : 'original-order' });
+
+
+//	var nStyles = document.styleSheets.length;
+//	alert(nStyles)
+//	for (var i = 2; i < nStyles; i++) {
+//		if (i == k) {
+//			document.styleSheets[i].disabled = false;
+//			alert(document.styleSheets[i].disabled)
+//		}
+//		else {
+//			document.styleSheets[i].disabled = true;
+//		}
+//		alert(document.styleSheets[i].disabled)
+//		
+//	}
+//
+//  
+// 	$('#container').isotope({ sortBy : 'original-order' });
+};
+ 
+
+
+function BPinjectClick(bigimageURL, tweettext, removeVal){
+	
+	document.getElementById('bigpicture').innerHTML= '<img class="image" src="'+bigimageURL+'"/><a href=# onClick="BPinjectClose();return false">Close</a><p>'+tweettext+'</p>'
+	
+	
+	popLast(removeVal);
+	
+
+	$.scrollTo(0,300)
+
+}
+
+var bigimageLink
+
+
+
+function BPinject() {
+	
+		
+		//find Tweet from json object items.  Inject in Timestamp, text, mentions
+				
+				//alert('workinhg'+TweetID);
+				//tweettext='blah'
+				
+				//document.getElementById('bigpicture').innerHTML= '<img class="image" src="'+Linksrc+'"/><a href=# onClick="BPinjectClose();return false">Close</a><p>'+tweettext+'</p>'
+
+				
+		$.jsonp({
+		type: "GET",
+		url: "http://api.twitter.com/1/statuses/show.json?",
+		dataType: "jsonp",
+		callbackParameter: "callback",
+		data: {		
+				
+			
+			id: TweetID,
+			include_entities: 'true'
+			
+			
+		},  
+	success: function(json, status){
+			
+			tweettext=json.text	
+	
+					document.getElementById('bigpicture').innerHTML= '<img class="image" src="'+Linksrc+'"/><a href=# onClick="BPinjectClose();return false">Close</a><p>'+tweettext+'</p>'
+
+	
+
+			
+		},
+		error: function(XHR, textStatus, errorThrown){
+			
+					document.getElementById('bigpicture').innerHTML= '<img class="image" src="'+Linksrc+'"/><a href=# onClick="BPinjectClose();return false">Close</a><p></p>'
+
+			
+			//document.getElementById('bigpicture').innerHTML= '<img class="image" src="'+imageLink+'"/><a href=# onClick="BPinjectClose();return false">Close</a><p>'+text+'</p>'
+
+		}
+	})
+		
+};
+		
+		
+
+		
+		
+		
+		function BPinjectClose(){
+			
+					document.getElementById('bigpicture').innerHTML= ''
+					
+					
+		
+		}
+		
+		
+	function	searchPush() {
+		
+		
+		username = document.getElementById('userinput').value;	
+			
+		push(username);
+		
+
+		
+			
+		}
+
+		function push(username) {	
+						
+						stopfetching=null
+						
+						Linksrc=null
+						TweetID=null
+						UID=null
+						//document.getElementById('userinput').value= username
+							
+						document.SearchForm.SearchInput.value=username
+						stopfetching=null
+						counter = 0
+						items=[]
+						pagenumber=1
+						BPinjectClose();
+						
+						//usernameclass='.'+username;
+							
+							for (i=0; i<IsoItemsArray.length ;i++) {
+								
+							//	alert(IsoItemsArray[i]+i)
+
+		$('#container').isotope( 'remove', IsoItemsArray[i] );
+		
+//		IsoItemsCounter+=1
+
+		
+		}
+
+		
+			IsoItemsCounter=0
+			IsoItemsArray=[]
+			
+			search();
+						
+					//	alert('iter'+removeVal+'iter'+IsoItemsArray.length+'iter'+IsoItemsCounter)
+	
+	//iterator = removeVal-IsoItemsCounter
+	//alert('iter'+iterator)
+	//alert(iterator);					
+						
+						//alert(usernameclass);
+						//	$('#container').isotope({ filter: usernameclass });
+
+						
+						 //search();
+						
+					//				first = "./";
+	
+//				first += second
+//				
+//				location.href = first;
+	}
+</script>
+
+
+  <script>
+  
+
+function videoInject(dom, vid, text) {
+		
+		var safetweettext=text.replace(/&##39/g,"'").replace(/&##rdquo/g,'"');
+
+		dom.parentNode.parentNode.parentNode.innerHTML='<p class="epoch" style="display:none;">'+this.epoch+'</p><iframe width="400" height="280" src="'+vid+'?autoplay=1" frameborder="0" allowfullscreen></iframe><div id="cards"><div>&#9432;<span><p class="Vidtexthover">"'+safetweettext+'"</p></span></div></div>';
+		
+	}
+
+  	var checkTimeScroll;
+	        (function(){
+
+   jQuery(window).bind('scrollstart', function(){									
+				$('.timescroll').show();		
+            });      
+            jQuery(window).bind('scrollstop', function(e){	
+			
+			checkTimeScroll = $('.timescroll').css("display");
+
+			
+				setTimeout("if (checkTimeScroll=='block'){$('.timescroll').hide();}",3000);
+
+
+            });
+ 
+        })();
+ 
+	
+	
+
+	var pagenumber;
+	var firewhenready;
+	
+	var stopfetching;
+	
+	
+	stopfetching=null;
+	
+	var counter;
+	var items;
+	items=[];
+  	
+	
+	var counterNewSearch
+	
+	function search(){ 
+	
+			
+	
+			startoff();
+			
+
+
+
+};
+
+
+
+
+
+
+	function morePics() {
+		
+			
+			if (pagenumber == undefined) {
+				
+				
+				
+				pagenumber=1
+				//alert('we defined pagenumber')
+				
+			}
+			//	alert('more'+pagenumber)				
+
+			if (!stopfetching) {
+				
+				
+				init();
+				
+				
+			}
+			
+	};
+	
+	var peopleMentionsArray=[]
+var spinnerActive
+
+	function init() {
+
+				//alert('init')
+
+		//TweetID=''
+		userinput = document.getElementById('userinput').value;
+		
+		
+		
+		//alert(TweetID)
+		
+				if (!spinnerActive) {
+				spinnerActive=true
+					document.getElementById('spinner').innerHTML = ""
+					
+					var opts = {
+						lines: 12, // The number of lines to draw
+						length: 7, // The length of each line
+						width: 5, // The line thickness
+						radius: 10, // The radius of the inner circle
+						color: '#999999', // #rbg or #rrggbb
+						speed: 1, // Rounds per second
+						trail: 100, // Afterglow percentage
+						shadow: true // Whether to render a shadow
+					};
+					var target = document.getElementById('spinner');
+					var spinner = new Spinner(opts).spin(target);
+					
+					
+				}
+
+		
+		
+		
+		if (TweetID!=null){
+		var params={include_entities: 'true', include_rts: 'true',screen_name: userinput,count: 400,page: pagenumber, max_id: TweetID}	
+		} else{
+		var params={include_entities: 'true', include_rts: 'true',screen_name: userinput,count: 400,page: pagenumber}
+
+			
+		}
+
+		$.jsonp({
+		type: "GET",
+		url: "http://api.twitter.com/1/statuses/user_timeline.json?'",
+		dataType: "jsonp",
+		callbackParameter: "callback",
+		data: params,  
+		success: function(json, status){
+		
+			//alert('hit'+pagenumber)
+		//	alert(pagenumber+json)
+	
+		
+			pagenumber+=1;
+
+			
+			tweets = json;
+			
+			
+
+			if (tweets[0]==null){
+			stopfetching=true
+			
+			}
+			//alert(tweets.length)
+			for (var i = 0; i < tweets.length; i++) {
+			
+				///et Text and Parse our URLs, @reply, #hashtags
+				tweettext = '<b>'+userinput+'</b> : '+tweets[i].text.parseURL().parseUsername()
+				//Build a link to the tweet
+				id = tweets[i].id_str
+				tweetLink = '<a href="https://twitter.com/'+userinput+'/status/' + id + '" target="_blank"><img src="./twitter_icon.png"></a>'
+				
+				
+				
+				//get all the @mentions in the tweet
+				var peopleMentions;
+				peopleMentions = ''
+				if (tweets[i].entities.user_mentions[0] != null) {
+					for (k in tweets[i].entities.user_mentions) {
+					
+						quote = '\''
+						//peopleMentions += '<a onClick="push(' + quote + tweets[i].entities.user_mentions[k].screen_name + quote + ')">@' + tweets[i].entities.user_mentions[k].screen_name + '</a> '
+						peopleMentions += '<a href="#/&UID='+tweets[i].entities.user_mentions[k].screen_name+'">@' + tweets[i].entities.user_mentions[k].screen_name + '</a> '
+
+						peopleMentionsArray.push(peopleMentions);
+						
+					//alert('jeff!@!');
+					
+					}
+				}
+				//Build the timestamp in a crazy way				
+				timestamp = new Date(tweets[i].created_at);
+				create_timestamp = jQuery.timeago(tweets[i].created_at)
+				epoch_timestamp = Date.parse(tweets[i].created_at);
+				//get the urls		
+				urls = tweets[i].entities.urls
+				if (urls == null) {
+				///do something with the tweets without content or images
+				}
+				
+				//if it has twitter media
+				if (tweets[i].entities.media) {
+					media = tweets[i].entities.media
+					
+					for (var j in media) {
+					
+						twitterpic = media[j].media_url
+						
+						quote = "\'"
+						var safetweettext = tweettext.replace(/'/g, "&##39").replace(/"/g, '&##rdquo');
+						
+						var newItems = '<div class="photo ' + userinput + '" ><p class="timescroll">' + create_timestamp + '<br>' + peopleMentions + '</p><p class="epoch" style="display:none;">' + epoch_timestamp + '</p><div id="cards"><div><p class="timehover">' + create_timestamp + '<br>' + peopleMentions + '</p><p class="sourcelinkhover">' + tweetLink + '</p><p class="expandHover"><a href=#/&UID='+ userinput +'&TWID=' + id + '&SRC=' + twitterpic + ' onClick="BPinjectClick(' + quote + twitterpic + quote + ',' + quote + safetweettext + quote + ',$++IsoItemsReplaceCounter++$);">Expand</a></p><img class="image" src="' + twitterpic + '" /><p class="texthover">' + tweettext + '</p></div></div></div>'
+						
+						//	var newItems ='<div class="photo" ><p class="timescroll">'+create_timestamp+'<br>'+peopleMentions+'</p><p class="epoch" style="display:none;">'+epoch_timestamp+'</p><div id="cards"><div><p class="timehover">'+create_timestamp+'<br>'+peopleMentions+'</p><p class="sourcelinkhover">'+tweetLink+'</p><img class="image" src="'+twitterpic+'" /><p class="texthover">'+tweettext+'</p></div></div></div>'						
+						items.push(newItems);
+						
+						
+					}
+				}
+				for (var j in urls) {
+				
+				
+					x = urls[j].expanded_url
+					
+					if (x == null) {
+					
+						x = urls[j].url
+						
+					}
+					//instagram
+					instagramSearch = x.search("http://instagr.am/")
+					if (instagramSearch != -1) {
+						instagramf(x, tweettext, create_timestamp, epoch_timestamp, peopleMentions, tweetLink, id, userinput);
+					}
+					//twitpic
+					twitpicSearch = x.search("http://twitpic.com/")
+					if (twitpicSearch != -1) {
+					
+						twitpicID = x.slice(19)
+						twitpic = "https://twitpic.com/show/large/"
+						twitpic += twitpicID
+						
+						quote = "\'"
+						var safetweettext = tweettext.replace(/'/g, "&##39").replace(/"/g, '&##rdquo');
+						
+						
+						
+						var newItems = '<div class="photo ' + userinput + '" ><p class="timescroll">' + create_timestamp + '<br>' + peopleMentions + '</p><p class="epoch" style="display:none;">' + epoch_timestamp + '</p><div id="cards"><div><p class="timehover">' + create_timestamp + '<br>' + peopleMentions + '</p><p class="sourcelinkhover">' + tweetLink + '</p><p class="expandHover"><a href=#/&UID='+ userinput +'&TWID=' + id + '&SRC=' + twitpic + ' onClick="BPinjectClick(' + quote + twitpic + quote + ',' + quote + safetweettext + quote + ',$++IsoItemsReplaceCounter++$);">Expand</a></p><img class="image" src="' + twitpic + '" /><p class="texthover">' + tweettext + '</p></div></div></div>'
+						
+						
+						
+						//			var newItems ='<div class="photo" ><p class="timescroll">'+create_timestamp+'<br>'+peopleMentions+'</p><p class="epoch" style="display:none;">'+epoch_timestamp+'</p><div id="cards"><div><p class="timehover">'+create_timestamp+'<br>'+peopleMentions+'</p><p class="sourcelinkhover">'+tweetLink+'</p><img class="image" src="'+twitpic+'" /><p class="texthover">'+tweettext+'</p></div></div></div>'						
+						items.push(newItems);
+						
+					}
+					
+					//youtube
+					
+					youtubeSearch = x.search("http://www.youtube.com/watch")
+					if (youtubeSearch != -1) {
+						youtubeID = x.slice(31, 42)
+						youtube = "http://www.youtube.com/embed/"
+						youtubepic = 'http://i2.ytimg.com/vi/' + youtubeID + '/hqdefault.jpg'
+						youtube += youtubeID
+						
+						
+						
+						
+						quote = "\'"
+						var safetweettext = tweettext.replace(/'/g, "&##39").replace(/"/g, '&##rdquo');
+						
+						
+						
+						
+						
+						//var newItems ='<div class="photo '+userinput+'" ><p class="timescroll">'+create_timestamp+'<br>'+peopleMentions+'</p><p class="epoch" style="display:none;">'+epoch_timestamp+'</p><div id="cards"><div><p class="timehover">'+create_timestamp+'<br>'+peopleMentions+'</p><p class="sourcelinkhover">'+tweetLink+'</p><p class="expandHover"><a href=#&TWID='+id+'&SRC='+twitpic+' onClick="BPinjectClick('+quote+twitpic+quote+','+quote+safetweettext+quote+',$++IsoItemsReplaceCounter++$);">Expand</a></p><img class="image" src="'+twitpic+'" /><p class="texthover">'+tweettext+'</p></div></div></div>'							
+						
+						
+						//alert('break')
+						
+						//var newItems = '<div class="photo ' + userinput + '" ><p class="timescroll">' + create_timestamp + '<br>' + peopleMentions + '</p><p class="epoch" style="display:none;">' + epoch_timestamp + '</p><div id="cards"><div><p class="timehover">' + create_timestamp + '<br>' + peopleMentions + '</p><p class="sourcelinkhover">' + tweetLink + '</p><p class="expandHover"><a href=#/&TWID=' + id + '&SRC=' + twitpic + ' onClick="BPinjectClick(' + quote + youtubepic + quote + ',' + quote + safetweettext + quote + ',$++IsoItemsReplaceCounter++$);">Expand</a></p><p class="playhover" onclick="videoInject(this,' + quote + youtube + quote + ',' + quote + safetweettext + quote + ');" target="_self"><img src="./watch.png"></p><img src="' + youtubepic + '"/><p class="texthover">' + tweettext + '</p></div></div></div>'
+						//	alert('break2')
+
+						//items.push(newItems);
+						
+						//alert('break3')
+					}
+					
+					//yfrog		
+					yfrogSearch = x.search("http://yfrog.com/")
+					if (yfrogSearch != -1) {
+						yfrogID = x.slice(17)
+						yfrog = "http://yfrog.com/"
+						yfrog += yfrogID
+						yfrog += ":medium"
+						
+						
+						quote = "\'"
+						var safetweettext = tweettext.replace(/'/g, "&##39").replace(/"/g, '&##rdquo');
+						
+						
+						
+						
+						//	var newItems ='<div class="photo" ><p class="timescroll">'+create_timestamp+'<br>'+peopleMentions+'</p><p class="epoch" style="display:none;">'+epoch_timestamp+'</p><div id="cards"><div><p class="timehover">'+create_timestamp+'<br>'+peopleMentions+'</p><p class="sourcelinkhover">'+tweetLink+'</p><img class="image" src="'+yfrog+'" /><p class="texthover">'+tweettext+'</p></div></div></div>'
+						var newItems = '<div class="photo ' + userinput + '" ><p class="timescroll">' + create_timestamp + '<br>' + peopleMentions + '</p><p class="epoch" style="display:none;">' + epoch_timestamp + '</p><div id="cards"><div><p class="timehover">' + create_timestamp + '<br>' + peopleMentions + '</p><p class="sourcelinkhover">' + tweetLink + '</p><p class="expandHover"><a href=#/&UID='+ userinput +'&TWID=' + id + '&SRC=' + yfrog + ' onClick="BPinjectClick(' + quote + yfrog + quote + ',' + quote + safetweettext + quote + ',$++IsoItemsReplaceCounter++$);">Expand</a></p><img class="image" src="' + yfrog + '" /><p class="texthover">' + tweettext + '</p></div></div></div>'
+						//var newItems ='<div class="photo '+userinput+'" ><p class="timescroll">'+create_timestamp+'<br>'+peopleMentions+'</p><p class="epoch" style="display:none;">'+epoch_timestamp+'</p><div id="cards"><div><p class="timehover">'+create_timestamp+'<br>'+peopleMentions+'</p><p class="sourcelinkhover">'+tweetLink+'</p><p class="expandHover"><a href=#&TWID='+id+'&SRC='+imageURL+' onClick="BPinjectClick('+quote+imageURL+quote+','+quote+safetweettext+quote+',$++IsoItemsReplaceCounter++$);">Expand</a></p><img class="image" src="'+imageURL+'" /><p class="texthover">'+tweettext+'</p></div></div></div>'						
+						//alert(newItems)
+					//	alert('FUCKYA' + newItems)
+						
+						items.push(newItems);
+						
+
+						
+						
+					}
+				}
+
+			}
+			
+			//alert('jeffItems'+items.length)
+		
+		
+		if (counter < 10){
+			//alert('<10')
+					$('#point a').trigger('click');
+
+					
+		};
+		
+		document.getElementById('spinner').innerHTML = '<a id="searchAction" href="javascript: startoff()">&nbsp&nbspMore...&nbsp&nbsp</a>'
+		spinnerActive=false
+		
+		},
+		error: function(XHR, textStatus, errorThrown){
+			
+			//alert(textStatus)
+			document.getElementById('spinner').innerHTML='Busted! Wait a few minutes for rate limit reset.<br><br>  <a id="searchAction" href="javascript: moreClick()">&nbsp&nbspMore...&nbsp&nbsp</a>'
+			//document.getElementById('spinner').innerHTML='Busted! Wait'
+
+		}
+	})
+	}
+	
+
+			String.prototype.parseURL = function() {
+				return this.replace(/[A-Za-z]+:\/\/[A-Za-z0-9-_]+\.[A-Za-z0-9-_:%&~\?\/.=]+/g, function(url) {
+					return url.link(url);
+				});
+			};
+
+			String.prototype.parseUsername = function() {
+				return this.replace(/[@]+[A-Za-z0-9-_]+/g, function(u) {
+					var username = u.replace("@","")
+					return u.link("./"+username);
+				});
+			};
+			
+			String.prototype.parseHashtag = function() {
+				return this.replace(/[#]+[A-Za-z0-9-_]+/g, function(t) {
+					var tag = t.replace("#","%23")
+					return t.link("http://search.twitter.com/search?q="+tag);
+				});
+			};
+	
+		function instagramf(x, tweettext, create_timestamp, epoch_timestamp, peopleMentions, tweetLink, id, userinput){				
+		
+		$.ajax({
+												type: "GET",
+												url: "http://api.instagram.com/oembed?",
+												dataType: "jsonp",
+												data: {
+													url: x
+												},
+												success: function(data){
+													imageURL = data.url
+													quote="\'"
+			var safetweettext=tweettext.replace(/'/g,"&##39").replace(/"/g,'&##rdquo');	
+													
+													
+												var newItems ='<div class="photo '+userinput+'" ><p class="timescroll">'+create_timestamp+'<br>'+peopleMentions+'</p><p class="epoch" style="display:none;">'+epoch_timestamp+'</p><div id="cards"><div><p class="timehover">'+create_timestamp+'<br>'+peopleMentions+'</p><p class="sourcelinkhover">'+tweetLink+'</p><p class="expandHover"><a href=#/&UID='+ userinput +'&TWID='+id+'&SRC='+imageURL+' onClick="BPinjectClick('+quote+imageURL+quote+','+quote+safetweettext+quote+',$++IsoItemsReplaceCounter++$);">Expand</a></p><img class="image" src="'+imageURL+'" /><p class="texthover">'+tweettext+'</p></div></div></div>'						
+												items.push(newItems);
+//<p class="IsoItemsCounter" style="display:none;">$++IsoItemsReplaceCounter++$</p>
+												}
+												
+											});
+
+	};
+	function startoff(){
+	
+	
+	
+	
+		$('#point a').trigger('click');
+
+	}
+
+	
+	var IsoItemsArray=[]
+ 	var counter = 0
+
+	
+    $(function(){
+		
+		    $(document).endlessScroll({
+		fireOnce: true,
+        bottomPixels: 500,
+        fireDelay:1500,
+        callback: function(i) {
+          console.log(i)
+		  
+		  $('#point a').trigger('click');
+		  
+		  //userinput = document.getElementById('userinput').value;
+  
+
+        }
+      });
+	
+		var $container = $('#container');
+		  
+		  
+	$container.imagesLoaded( function(){
+		
+		itemSelector : '.photo'
+        $(this).isotope({
+			//sortBy: "epoch",
+			resizesContainer: true,
+			//sortAscending : false,
+//			getSortData : {
+//
+//  epoch : function ( $elem ) {
+//    return parseInt( $elem.find('.epoch').text() );
+//  }
+//}
+			
+		
+        });
+      });
+	  
+	  
+	  
+	  		  $('#point a').click(function(){
+			  			  makeItemObjects(injectPics);
+
+				});
+
+		  
+		  function makeItemObjects(callback){
+		  	
+			
+		  	
+			if (stopfetching && counter >= items.length-1) {
+			
+				//alert('stop')
+				
+				document.getElementById('spinner').innerHTML = 'End of the tweet line!'
+				
+			
+			}
+			else {
+			
+				if (counter + 20 >= items.length) {
+				
+				
+					morePics();
+					//alert('makeItemObjects gettingmore')
+					
+				}
+				
+				
+				var amount
+
+				//alert("counter"+counter)
+				itemsLength=items.length-1
+			//	alert("items.length-1"+itemsLength)
+				
+				if (counter + 7 <= itemsLength) {
+				//	alert(7)
+					
+					
+					items[counter + 0] = items[counter + 0].replace("$++IsoItemsReplaceCounter++$", String(IsoItemsArray.length));
+					items[counter + 1] = items[counter + 1].replace("$++IsoItemsReplaceCounter++$", String(IsoItemsArray.length));
+					items[counter + 2] = items[counter + 2].replace("$++IsoItemsReplaceCounter++$", String(IsoItemsArray.length));
+					items[counter + 3] = items[counter + 3].replace("$++IsoItemsReplaceCounter++$", String(IsoItemsArray.length));
+					items[counter + 4] = items[counter + 4].replace("$++IsoItemsReplaceCounter++$", String(IsoItemsArray.length));
+					items[counter + 5] = items[counter + 5].replace("$++IsoItemsReplaceCounter++$", String(IsoItemsArray.length));
+					items[counter + 6] = items[counter + 6].replace("$++IsoItemsReplaceCounter++$", String(IsoItemsArray.length));
+					
+					Amount = 7
+					
+					// document.getElementById('counter').innerHTML = items.length + ' <br> ' + counter + ' <br> ' + pagenumber + ' <br> ' + counterNewSearch + ' <br> ' + "added 7" + '<br>'
+					
+					
+					//alert(items[counter + 0])
+					
+					stuff = items[counter + 0] + items[counter + 1] + items[counter + 2] + items[counter + 3] + items[counter + 4] + items[counter + 5] + items[counter + 6];
+							
+				}
+				
+				
+				
+				if (counter + 3 <= itemsLength && itemsLength <= counter + 6) {
+				//	alert('3')
+					
+					items[counter + 0] = items[counter + 0].replace("$++IsoItemsReplaceCounter++$", String(IsoItemsArray.length));
+					items[counter + 1] = items[counter + 1].replace("$++IsoItemsReplaceCounter++$", String(IsoItemsArray.length));
+					items[counter + 2] = items[counter + 2].replace("$++IsoItemsReplaceCounter++$", String(IsoItemsArray.length));
+					
+					stuff = items[counter + 0] + items[counter + 1] + items[counter + 2];
+					//	counter += 3;
+					// counterNewSearch += 3;
+					
+					// document.getElementById('counter').innerHTML = items.length + ' <br> ' + counter + ' <br> ' + pagenumber + ' <br> ' + counterNewSearch + ' <br> ' + "added 3" + '<br>'
+					Amount = 3
+					
+				}
+				
+				if (counter + 1 <= itemsLength && itemsLength <= counter + 2) {
+				
+					//alert('1')
+					
+					//		alert('Stuff'+items[items.length-1])
+					
+					
+					items[counter + 0] = items[counter + 0].replace("$++IsoItemsReplaceCounter++$", String(IsoItemsArray.length));
+					
+					
+					stuff = items[counter + 0];
+								
+					
+					// document.getElementById('counter').innerHTML = items.length + ' <br> ' + counter + ' <br> ' + pagenumber + ' <br> ' + counterNewSearch + ' <br> ' + "added 3" + '<br>'
+					
+					Amount = 1
+				}
+				
+
+				
+				
+				//alert("stuff"+stuff+"amout"+Amount)
+				var $newItems = $(stuff);
+				stuff=''
+
+				
+				callback($newItems);
+			}
+		
+		}
+		
+
+var readyIso		
+		function injectPics(newItems) {
+			
+						counter += Amount;
+						counterNewSearch += Amount;
+						IsoItemsArray.push(newItems);
+						Amount = 0
+			
+			
+	//$('#container').isotope('insert',$newItems );
+	if (readyIso==undefined) {
+		
+		readyIso=true
+	}
+	if (readyIso) {
+	
+	
+	
+		readyIso=false
+		$container.append(newItems).isotope('appended', newItems, onReady());
+		
+	} else {
+		
+	//	alert('isoReady=false')
+		setTimeout("",10);
+
+		injectPics(newItems)
+	}
+	
+	
+
+	
+	setTimeout("$('#container').isotope({ sortBy : 'original-order' });",400);
+		setTimeout("$('#container').isotope({ sortBy : 'original-order' });",1000);
+
+			
+}
+
+function onReady() {
+	
+			readyIso=true
+
+	
+	
+}
+
+		  	
+//			if (!IsoItemsCounter) {
+//				IsoItemsCounter = 0
+//				}
+				
+//				
+//				if (!spinnerActive) {
+//					spinnerActive = true
+//					document.getElementById('spinner').innerHTML = ""
+//					
+//					var opts = {
+//						lines: 12, // The number of lines to draw
+//						length: 7, // The length of each line
+//						width: 5, // The line thickness
+//						radius: 10, // The radius of the inner circle
+//						color: '#999999', // #rbg or #rrggbb
+//						speed: 1, // Rounds per second
+//						trail: 100, // Afterglow percentage
+//						shadow: true // Whether to render a shadow
+//					};
+//					var target = document.getElementById('spinner');
+//					var spinner = new Spinner(opts).spin(target);
+//					
+//					
+//				}
+				
+
+//				if (firewhenready==undefined) {
+//					
+//					firewhenready=true	
+//				}
+//				
+//				
+//				
+//				comparer = items.length-1
+				
+			//	alert(stopfetching+'just'+comparer+'jsut'+counter)
+
+//				if (stopfetching && counter >= comparer) {
+//					
+//					alert('stop')
+//					
+//						document.getElementById('spinner').innerHTML = 'End of the tweet line!'
+//						firewhenready=false	
+//						
+//					//		document.getElementById('spinner').innerHTML = 'End of the tweet line!'+peopleMentionsArray.toString()
+//					
+//					}
+					
+				
+//			if (firewhenready) {
+					//alert("inject begine")
+					
+					
+
+//					if (counter + 20 >= items.length) {
+//					
+//					
+//						morePics();
+//						
+//					}
+//					
+					
+	//				var amount
+
+
+//					compare=items.length-1
+//					if (counter + 7 <= compare) {
+//						alert(7)
+//					
+//						items[counter + 0] = items[counter + 0].replace("$++IsoItemsReplaceCounter++$", String(IsoItemsArray.length));
+//						items[counter + 1] = items[counter + 1].replace("$++IsoItemsReplaceCounter++$", String(IsoItemsArray.length));
+//						items[counter + 2] = items[counter + 2].replace("$++IsoItemsReplaceCounter++$", String(IsoItemsArray.length));
+//						items[counter + 3] = items[counter + 3].replace("$++IsoItemsReplaceCounter++$", String(IsoItemsArray.length));
+//						items[counter + 4] = items[counter + 4].replace("$++IsoItemsReplaceCounter++$", String(IsoItemsArray.length));
+//						items[counter + 5] = items[counter + 5].replace("$++IsoItemsReplaceCounter++$", String(IsoItemsArray.length));
+//						items[counter + 6] = items[counter + 6].replace("$++IsoItemsReplaceCounter++$", String(IsoItemsArray.length));
+//					
+//						Amount=7
+//						
+//						document.getElementById('counter').innerHTML = items.length + ' <br> ' + counter + ' <br> ' + pagenumber + ' <br> ' + counterNewSearch + ' <br> ' + "added 7"+'<br>'+InjectedItems
+//
+//						
+//						//alert(items[counter + 0])
+//						
+//						stuff = items[counter + 0] + items[counter + 1] + items[counter + 2] + items[counter + 3] + items[counter + 4] + items[counter + 5] + items[counter + 6];
+////					//	counter += 7;
+////					// counterNewSearch += 7;
+////						
+//					}
+					
+					
+					
+//					if (counter + 3 <= compare && compare <= counter + 6) {
+//						alert('3')
+//					
+//						items[counter + 0] = items[counter + 0].replace("$++IsoItemsReplaceCounter++$", String(IsoItemsArray.length));
+//						items[counter + 1] = items[counter + 1].replace("$++IsoItemsReplaceCounter++$", String(IsoItemsArray.length));
+//						items[counter + 2] = items[counter + 2].replace("$++IsoItemsReplaceCounter++$", String(IsoItemsArray.length));
+//						
+//						stuff = items[counter + 0] + items[counter + 1] + items[counter + 2];
+//					//	counter += 3;
+//					// counterNewSearch += 3;
+////						
+//					document.getElementById('counter').innerHTML = items.length + ' <br> ' + counter + ' <br> ' + pagenumber + ' <br> ' + counterNewSearch + ' <br> ' + "added 3"+'<br>'+InjectedItems
+//Amount=3
+////						
+//					}
+					
+//					if (counter + 1 <= compare && compare <= counter + 2) {
+//						
+//						alert('1')
+//					
+//						//		alert('Stuff'+items[items.length-1])
+//						
+//						
+//						items[counter + 0] = items[counter + 0].replace("$++IsoItemsReplaceCounter++$", String(IsoItemsArray.length));
+//						
+//						
+//						stuff = items[counter + 0];
+////						counter += 1;
+////						counterNewSearch += 1;
+//						
+//					document.getElementById('counter').innerHTML = items.length + ' <br> ' + counter + ' <br> ' + pagenumber + ' <br> ' + counterNewSearch + ' <br> ' + "added 3"+'<br>'+InjectedItems
+//
+//				Amount=1					
+//					}
+					
+					
+				
+//										//only insert stuff once
+//
+//					var $newItems = $(stuff);
+//					
+//					stuff = ''
+					
+					
+//					$newItems.imagesLoaded(function(){
+//					
+//						//	alert('inster'+items[items.length-1])
+//						
+//						
+//						IsoItemsArray.push($newItems);
+//						length=IsoItemsArray.length-1
+//						
+//						firewhenready = false
+//						
+//					//	var isolength
+//						
+//					//	isolength=IsoItemsArray.length-1
+//						
+//						$('#container').isotope('insert', IsoItemsArray[String(IsoItemsArray.length-1)]);
+//						
+//						firewhenready = true
+//
+//						InjectedItems+=Amount
+//						counter += Amount;
+//						counterNewSearch += Amount;
+//						
+//						//only insert $newItems once
+//						
+//						$newItems = null;
+//						var sortName = 'epoch';
+//						$('#container').isotope({
+//							sortBy: sortName
+//						});
+//						
+//						
+//						firewhenready = true;
+//						document.getElementById('spinner').innerHTML = '<a id="searchAction" href="javascript: startoff()">&nbsp&nbspMore...&nbsp&nbsp</a>'
+//						spinnerActive = false
+//						
+//						
+//
+//						
+										
+					
+					
+					
+			
+	//			}
+//				else {
+//					
+//					if(!stopfetching) {
+//				
+//					setTimeout("startoff()", 1000);
+//					}
+//					
+//				}
+//				
+//			};
+//					
+//				
+//				
+//				
+//				function isolength() {
+//					
+//					return IsoItemsArray.length-1
+//				};
+
+
+
+ 									//document.getElementById('spinner').innerHTML='<a id="searchAction" href="javascript: moreClick()">&nbsp&nbspMore...&nbsp&nbsp</a>'
+
+	  									//document.getElementById('spinner').innerHTML=''
+
+
+	  
+  
+
+	
+
+	
+
+	
+	
+	});
+	
+		var IsoItemsCounter
+		IsoItemsCounter=0
+	function popLast(removeVal) {
+		
+		//removeVal=2
+		
+	//removeNum=removeVal-IsoItemsCounter
+	
+	//alert('iter'+removeVal+'iter'+IsoItemsArray.length+'iter'+IsoItemsCounter)
+	
+	iterator = removeVal-IsoItemsCounter
+	
+	//alert('iter'+iterator)
+	//alert(iterator);
+		
+		for (i=0; i<iterator ;i++) {
+
+		$('#container').isotope( 'remove', IsoItemsArray[IsoItemsCounter] );
+		
+		IsoItemsCounter+=1
+
+		
+		}
+	//	 var sortName = 'epoch';
+  		$('#container').isotope({ sortBy : 'original-order' });
+		
+	};
+
+	function globals() {
+
+
+			alert(items.length + ' <br> ' + counter + ' <br> ' + pagenumber + ' <br> ' + counterNewSearch + ' <br> ' + "added 3"+'<br>'+stopfetching);
+
+	}
+	
+	
+	
+  </script>
+    
+    <footer id='footer'>
+    </footer>
+    
+  </section> <!-- #content -->
+  
+
+</body>
+</html>
